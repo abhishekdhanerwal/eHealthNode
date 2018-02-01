@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt-nodejs');
 var userRole = require('../enums/user_role');
 
 var Coupon = require('../models/Coupon');
@@ -53,7 +54,32 @@ var DietitianSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Coupon'
         }
-    }]
+    }],
+    password: {
+        type:String,
+        required:true
+    }
+});
+
+DietitianSchema.pre('save', function (next) {
+
+    var user = this;
+    //check if password is modified
+    if(!user.isModified('password'))
+        return next();
+
+    bcrypt.genSalt(10, function (err, salt) {
+        if(err)
+            return next(err);
+
+        bcrypt.hash(user.password, salt, null, function (err, hash) {
+            if(err)
+                return next(err);
+
+            user.password = hash;
+            next();
+        })
+    })
 });
 
 DietitianSchema.methods.toJson = function () {
@@ -61,6 +87,12 @@ DietitianSchema.methods.toJson = function () {
     delete user.password;
 
     return user;
+};
+
+DietitianSchema.methods.comparePassword = function (password , callback) {
+    console.log(password)
+    console.log(this.password)
+    bcrypt.compare(password , this.password, callback)
 };
 
 module.exports = mongoose.model('Dietitian', DietitianSchema);

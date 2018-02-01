@@ -53,6 +53,7 @@ module.exports = function (app) {
                         state:dietitian.state,
                         city:dietitian.city,
                         pinCode:dietitian.pinCode,
+                        password: 'secret',
                         active:true
                     });
                     newDietitian.save(function (err) {

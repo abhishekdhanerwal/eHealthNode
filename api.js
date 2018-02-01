@@ -29,6 +29,7 @@ var product = require('./routes/productRoute')(app);
 var dietitian = require('./routes/DietitianRoute')(app);
 var coupon = require('./routes/CouponRoute')(app);
 var ingredient = require('./routes/IngredientRoute')(app);
+var recipe = require('./routes/RecipeRoute')(app);
 
 
 if(env === 'development'){
